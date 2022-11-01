@@ -12,10 +12,16 @@ class PhoneBook extends PureComponent {
   };
 
   componentDidMount() {
-    const isContactsInLocalStorage = localStorage.getItem('contacts');
-    const isContactsInLocalStorageParsed = JSON.parse(isContactsInLocalStorage);
-    if (isContactsInLocalStorageParsed) {
-      this.setState({ contacts: isContactsInLocalStorageParsed });
+    try {
+      const isContactsInLocalStorage = localStorage.getItem('contacts');
+      const isContactsInLocalStorageParsed = JSON.parse(
+        isContactsInLocalStorage
+      );
+      if (isContactsInLocalStorageParsed) {
+        this.setState({ contacts: isContactsInLocalStorageParsed });
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
