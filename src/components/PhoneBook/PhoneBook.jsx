@@ -11,6 +11,20 @@ class PhoneBook extends Component {
     filter: '',
   };
 
+  componentDidMount() {
+    const isContactsInLocalStorage = localStorage.getItem('contacts');
+    const isContactsInLocalStorageParsed = JSON.parse(isContactsInLocalStorage);
+    if (isContactsInLocalStorageParsed) {
+      this.setState({ contacts: isContactsInLocalStorageParsed });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contact) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   onClickBtnAddContact = data => {
     const normalizeName = data.name.toLocaleLowerCase();
     const renderContactsList = this.state.contacts.find(
@@ -36,20 +50,6 @@ class PhoneBook extends Component {
       contacts: prevState.contacts.filter(item => item.id !== id),
     }));
   };
-
-  componentDidMount() {
-    const isContactsInLocalStorage = localStorage.getItem('contacts');
-    const isContactsInLocalStorageParsed = JSON.parse(isContactsInLocalStorage);
-    if (isContactsInLocalStorageParsed) {
-      this.setState({ contacts: isContactsInLocalStorageParsed });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.contacts !== prevState.contact) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
 
   render() {
     const normFilter = this.state.filter.toLocaleLowerCase();
