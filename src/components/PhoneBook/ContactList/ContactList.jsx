@@ -1,18 +1,18 @@
-import { AiOutlineUserDelete } from 'react-icons/ai';
 import { Box } from '../PhoneBook.styled';
-import { ContactItem, ContactNumber, DeleteBtn } from './ContactList.styled';
+import { ContactItem } from './ContactList.styled';
 import PropTypes from 'prop-types';
+import { Item } from '../ContactItem/ContactItem';
 
 export const ContactList = ({ data, handleOnDelete }) => {
   return (
     <Box mr="auto" ml="auto" mt="20px" as="ul">
       {data.map(({ id, name, number }) => (
         <ContactItem key={id}>
-          {name}: <ContactNumber>{number}</ContactNumber>{' '}
-          <DeleteBtn type="button" onClick={() => handleOnDelete(id)}>
-            <AiOutlineUserDelete />
-            Delete
-          </DeleteBtn>
+          <Item
+            name={name}
+            number={number}
+            handleOnDelete={() => handleOnDelete(id)}
+          />
         </ContactItem>
       ))}
     </Box>

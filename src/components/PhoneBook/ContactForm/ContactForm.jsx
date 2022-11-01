@@ -31,6 +31,7 @@ class ContactForm extends Component {
         flexDirection="column"
         alignItems="center"
         onSubmit={this.handleOnSubmit}
+        autocomplete="off"
       >
         <LabelForm>
           Name
