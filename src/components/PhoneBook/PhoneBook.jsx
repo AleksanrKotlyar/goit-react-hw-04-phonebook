@@ -37,6 +37,20 @@ class PhoneBook extends Component {
     }));
   };
 
+  componentDidMount() {
+    const isContactsInLocalStorage = localStorage.getItem('contacts');
+    const isContactsInLocalStorageParsed = JSON.parse(isContactsInLocalStorage);
+    if (isContactsInLocalStorageParsed) {
+      this.setState({ contacts: isContactsInLocalStorageParsed });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contact) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   render() {
     const normFilter = this.state.filter.toLocaleLowerCase();
     const renderContactsList = this.state.contacts.filter(contact =>
@@ -53,6 +67,7 @@ class PhoneBook extends Component {
         max-height="100vh"
         border="normal"
         borderRadius="normal"
+        borderColor="green"
         as="section"
       >
         <Title>Phonebook</Title>
