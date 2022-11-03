@@ -5,7 +5,7 @@ import { Item } from '../ContactItem/ContactItem';
 
 export const ContactList = ({ data, handleOnDelete }) => {
   return (
-    <Box mr="auto" ml="auto" mt="20px" as="ul">
+    <Box mr="auto" ml="auto" mt="5px" pl="2" as="ul">
       {data.map(({ id, name, number }) => (
         <ContactItem key={id}>
           <Item

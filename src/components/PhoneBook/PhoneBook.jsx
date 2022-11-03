@@ -3,15 +3,19 @@ import { Box, Title, SubTitle } from './PhoneBook.styled';
 import ContactForm from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
+import { ContactsSkeleton } from 'components/ContactsSkeleton/ContactsSkeleton';
+
 import { nanoid } from 'nanoid';
 
 class PhoneBook extends Component {
   state = {
     contacts: [],
     filter: '',
+    isLoading: false,
   };
 
   componentDidMount() {
+    this.setState({ isLoading: true });
     try {
       const isContactsInLocalStorage = localStorage.getItem('contacts');
       const isContactsInLocalStorageParsed = JSON.parse(
@@ -20,12 +24,13 @@ class PhoneBook extends Component {
       if (isContactsInLocalStorageParsed) {
         this.setState({ contacts: isContactsInLocalStorageParsed });
       }
+      setTimeout(() => this.setState({ isLoading: false }), 1000);
     } catch (error) {
       console.error(error);
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_, prevState) {
     if (this.state.contacts !== prevState.contact) {
       localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
     }
@@ -58,6 +63,7 @@ class PhoneBook extends Component {
   };
 
   render() {
+    const { filter, isLoading } = this.state;
     const normFilter = this.state.filter.toLocaleLowerCase();
     const renderContactsList = this.state.contacts.filter(contact =>
       contact.name.toLocaleLowerCase().includes(normFilter)
@@ -82,12 +88,15 @@ class PhoneBook extends Component {
         <SubTitle>Contacts</SubTitle>
         <Filter
           handleFilterOnInputChange={this.handleFilterOnInputChange}
-          value={this.state.filter}
+          value={filter}
         />
-        <ContactList
-          data={renderContactsList}
-          handleOnDelete={this.handleOnDelete}
-        />
+        {isLoading && <ContactsSkeleton />}
+        {!isLoading && (
+          <ContactList
+            data={renderContactsList}
+            handleOnDelete={this.handleOnDelete}
+          />
+        )}
       </Box>
     );
   }

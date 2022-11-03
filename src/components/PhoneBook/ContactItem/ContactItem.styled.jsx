@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
 export const ContactNumber = styled.span`
-  margin-left: ${p => p.theme.space[3]}px;
+  margin-left: ${p => p.theme.space[2]}px;
 `;
 
 export const DeleteBtn = styled.button`
-  margin-left: ${p => p.theme.space[4]}px;
+  margin-left: auto;
   border: 0 solid transparent;
   padding: ${p => p.theme.space[2]}px ${p => p.theme.space[3]}px;
   display: flex;
