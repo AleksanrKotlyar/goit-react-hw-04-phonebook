@@ -15,13 +15,13 @@ class PhoneBook extends Component {
   };
 
   componentDidMount() {
-    this.setState({ isLoading: true });
     try {
       const isContactsInLocalStorage = localStorage.getItem('contacts');
       const isContactsInLocalStorageParsed = JSON.parse(
         isContactsInLocalStorage
       );
-      if (isContactsInLocalStorageParsed) {
+      if (isContactsInLocalStorageParsed.length > 0) {
+        this.setState({ isLoading: true });
         this.setState({ contacts: isContactsInLocalStorageParsed });
       }
       setTimeout(() => this.setState({ isLoading: false }), 1000);
