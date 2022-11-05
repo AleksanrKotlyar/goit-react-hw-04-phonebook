@@ -12,6 +12,7 @@ class PhoneBook extends Component {
     contacts: [],
     filter: '',
     isLoading: false,
+    hasLocalStorageData: false,
   };
 
   componentDidMount() {
@@ -20,9 +21,12 @@ class PhoneBook extends Component {
       const isContactsInLocalStorageParsed = JSON.parse(
         isContactsInLocalStorage
       );
-      if (isContactsInLocalStorageParsed) {
-        this.setState({ isLoading: true });
-        this.setState({ contacts: isContactsInLocalStorageParsed });
+      if (isContactsInLocalStorageParsed.length > 0) {
+        this.setState({
+          isLoading: true,
+          contacts: isContactsInLocalStorageParsed,
+          hasLocalStorageData: true,
+        });
       }
       setTimeout(() => this.setState({ isLoading: false }), 1000);
     } catch (error) {
@@ -63,7 +67,7 @@ class PhoneBook extends Component {
   };
 
   render() {
-    const { filter, isLoading } = this.state;
+    const { filter, isLoading, hasLocalStorageData } = this.state;
     const normFilter = this.state.filter.toLocaleLowerCase();
     const renderContactsList = this.state.contacts.filter(contact =>
       contact.name.toLocaleLowerCase().includes(normFilter)
@@ -90,7 +94,7 @@ class PhoneBook extends Component {
           handleFilterOnInputChange={this.handleFilterOnInputChange}
           value={filter}
         />
-        {isLoading && <ContactsSkeleton />}
+        {isLoading && hasLocalStorageData && <ContactsSkeleton />}
         {!isLoading && (
           <ContactList
             data={renderContactsList}
