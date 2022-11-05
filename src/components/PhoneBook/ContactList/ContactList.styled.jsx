@@ -9,6 +9,6 @@ export const ContactItem = styled.li`
   padding-left: ${p => p.theme.space[3]}px;
   margin-bottom: 5px;
 `;
-export const ContactNumber = styled.span`
-  margin-left: ${p => p.theme.space[3]}px;
-`;
+// export const ContactNumber = styled.span`
+//   margin-left: ${p => p.theme.space[3]}px;
+// `;

@@ -20,7 +20,7 @@ class PhoneBook extends Component {
       const isContactsInLocalStorageParsed = JSON.parse(
         isContactsInLocalStorage
       );
-      if (isContactsInLocalStorageParsed.length > 0) {
+      if (isContactsInLocalStorageParsed) {
         this.setState({ isLoading: true });
         this.setState({ contacts: isContactsInLocalStorageParsed });
       }
