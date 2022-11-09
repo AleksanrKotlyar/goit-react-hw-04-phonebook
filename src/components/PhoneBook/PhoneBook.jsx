@@ -1,109 +1,92 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Title, SubTitle } from './PhoneBook.styled';
-import ContactForm from './ContactForm/ContactForm';
+import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
 import { ContactsSkeleton } from 'components/ContactsSkeleton/ContactsSkeleton';
-
 import { nanoid } from 'nanoid';
 
-class PhoneBook extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-    isLoading: false,
-    hasLocalStorageData: false,
-  };
+export const PhoneBook = () => {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasLocalStorageData, setHasLocalStorageData] = useState(false);
 
-  componentDidMount() {
+  useEffect(() => {
     try {
       const isContactsInLocalStorage = localStorage.getItem('contacts');
       const isContactsInLocalStorageParsed = JSON.parse(
         isContactsInLocalStorage
       );
       if (isContactsInLocalStorageParsed.length > 0) {
-        this.setState({
-          isLoading: true,
-          contacts: isContactsInLocalStorageParsed,
-          hasLocalStorageData: true,
-        });
+        setIsLoading(true);
+        setContacts(isContactsInLocalStorageParsed);
+        setHasLocalStorageData(true);
       }
-      setTimeout(() => this.setState({ isLoading: false }), 1000);
+
+      setTimeout(() => setIsLoading(false), 1000);
     } catch (error) {
       console.error(error);
     }
-  }
+  }, []);
 
-  componentDidUpdate(_, prevState) {
-    if (this.state.contacts !== prevState.contact) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
+  useEffect(
+    () => localStorage.setItem('contacts', JSON.stringify(contacts)),
+    [contacts]
+  );
 
-  onClickBtnAddContact = data => {
+  const onClickBtnAddContact = data => {
     const normalizeName = data.name.toLocaleLowerCase();
-    const renderContactsList = this.state.contacts.find(
+    const renderContactsList = contacts.find(
       contact => contact.name.toLocaleLowerCase() === normalizeName
     );
     renderContactsList
       ? alert(`${data.name} is already in contacts`)
-      : this.setState(prevState => {
-          return {
-            contacts: [{ ...data, id: nanoid(5) }, ...prevState.contacts],
-          };
-        });
+      : setContacts(prevState => [{ ...data, id: nanoid(5) }, ...prevState]);
   };
 
-  handleFilterOnInputChange = inform => {
-    this.setState({
-      filter: inform,
-    });
+  const handleFilterOnInputChange = inform => {
+    setFilter(inform);
   };
 
-  handleOnDelete = id => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(item => item.id !== id),
-    }));
+  const handleOnDelete = id => {
+    setContacts(prevState => prevState.filter(item => item.id !== id));
   };
 
-  render() {
-    const { filter, isLoading, hasLocalStorageData } = this.state;
-    const normFilter = this.state.filter.toLocaleLowerCase();
-    const renderContactsList = this.state.contacts.filter(contact =>
-      contact.name.toLocaleLowerCase().includes(normFilter)
-    );
-    return (
-      <Box
-        bg="mainBg"
-        p="4"
-        mr="auto"
-        ml="auto"
-        mt="3"
-        width="400px"
-        max-height="100vh"
-        border="normal"
-        borderRadius="normal"
-        borderColor="green"
-        as="section"
-      >
-        <Title>Phonebook</Title>
-        <ContactForm onSubmitForm={this.onClickBtnAddContact} />
+  const normFilter = filter.toLocaleLowerCase();
+  const renderContactsList = contacts.filter(contact =>
+    contact.name.toLocaleLowerCase().includes(normFilter)
+  );
 
-        <SubTitle>Contacts</SubTitle>
-        <Filter
-          handleFilterOnInputChange={this.handleFilterOnInputChange}
-          value={filter}
+  return (
+    <Box
+      bg="mainBg"
+      p="4"
+      mr="auto"
+      ml="auto"
+      mt="3"
+      width="400px"
+      max-height="100vh"
+      border="normal"
+      borderRadius="normal"
+      borderColor="green"
+      as="section"
+    >
+      <Title>Phonebook</Title>
+      <ContactForm onSubmitForm={onClickBtnAddContact} />
+
+      <SubTitle>Contacts</SubTitle>
+      <Filter
+        handleFilterOnInputChange={handleFilterOnInputChange}
+        value={filter}
+      />
+      {isLoading && hasLocalStorageData && <ContactsSkeleton />}
+      {!isLoading && (
+        <ContactList
+          data={renderContactsList}
+          handleOnDelete={handleOnDelete}
         />
-        {isLoading && hasLocalStorageData && <ContactsSkeleton />}
-        {!isLoading && (
-          <ContactList
-            data={renderContactsList}
-            handleOnDelete={this.handleOnDelete}
-          />
-        )}
-      </Box>
-    );
-  }
-}
-
-export default PhoneBook;
+      )}
+    </Box>
+  );
+};
